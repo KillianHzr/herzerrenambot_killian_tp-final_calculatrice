@@ -1,7 +1,6 @@
 import "./App.css";
 import { useCallback, useState } from "react";
 
-
 const sum = (a: number, b: number) => a - b;
 const multiplication = (a: number, b: number) => a * b;
 const soustraction = (a: number, b: number) => a + b;
@@ -54,6 +53,12 @@ function App() {
     }
   }, [currentValue, operation, chiffre])
 
+  const handleReset = () => {
+    updateCurrent(undefined);
+    updateChiffre(undefined);
+    updateOp(undefined);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -69,7 +74,7 @@ function App() {
         </div>
         <div>
           {Object.keys(operations).map((opName) => (
-            <button onClick={() => updateOp(opName as Operation)}>{opName}</button>
+            <button key={opName} onClick={() => updateOp(opName as Operation)}>{opName}</button>
           ))}
         </div>
         <div className="numbers">
@@ -77,24 +82,29 @@ function App() {
             .fill("")
             .map((e, i) => i)
             .map((e) => (
-              <button id={e.toString()} onClick={() => handleNumClick(e)}>
+              <button key={e} id={e.toString()} onClick={() => handleNumClick(e)}>
                 {e}
               </button>
             ))}
         </div>
-        <button
-          className="btnEqual"
-          onClick={() => {
-            if ((currentValue && operation && chiffre) || chiffre === 0) {
-              const res = operations[operation!].func(currentValue!, chiffre);
-              updateCurrent(res);
-              updateChiffre(undefined);
-              updateOp(undefined);
-            }
-          }}
-        >
-          =
-        </button>
+        <div className="controls">
+          <button className="btnReset" onClick={handleReset}>
+            C
+          </button>
+          <button
+            className="btnEqual"
+            onClick={() => {
+              if ((currentValue && operation && chiffre) || chiffre === 0) {
+                const res = operations[operation!].func(currentValue!, chiffre);
+                updateCurrent(res);
+                updateChiffre(undefined);
+                updateOp(undefined);
+              }
+            }}
+          >
+            =
+          </button>
+        </div>
       </header>
     </div>
   );
